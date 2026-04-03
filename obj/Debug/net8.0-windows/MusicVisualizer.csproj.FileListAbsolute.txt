@@ -95,3 +95,8 @@ C:\Development\Projects\MusicVizWiz\obj\Debug\net8.0-windows\refint\MusicVisuali
 C:\Development\Projects\MusicVizWiz\obj\Debug\net8.0-windows\MusicVisualizer.pdb
 C:\Development\Projects\MusicVizWiz\obj\Debug\net8.0-windows\MusicVisualizer.genruntimeconfig.cache
 C:\Development\Projects\MusicVizWiz\obj\Debug\net8.0-windows\ref\MusicVisualizer.dll
+C:\Development\Projects\MusicVizWiz\obj\Debug\net8.0-windows\Controls\AudioControlPanel.baml
+C:\Development\Projects\MusicVizWiz\obj\Debug\net8.0-windows\Controls\BarsSettingsControl.baml
+C:\Development\Projects\MusicVizWiz\obj\Debug\net8.0-windows\Controls\AudioControlPanel.g.cs
+C:\Development\Projects\MusicVizWiz\obj\Debug\net8.0-windows\Controls\BarsSettingsControl.g.cs
+C:\Development\Projects\MusicVizWiz\obj\Debug\net8.0-windows\Controls\VisualizerHostControl.g.cs

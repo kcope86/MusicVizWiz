@@ -1,5 +1,5 @@
 ﻿MusicVisualizer
-
+1.0.0.0
 
 winexe
 C#
@@ -12,9 +12,9 @@ TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR
 C:\Development\Projects\MusicVizWiz\App.xaml
 2117486345
 
-15-928054430
+17-1146612241
 213-388310066
 MainWindow.xaml;Visualization\SpectrumVisualizerControl.xaml;
 
-False
+True
 
