@@ -269,20 +269,35 @@
                         BorderThickness="1"
                         CornerRadius="6"
                         Padding="12">
-                    <StackPanel>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
                         <!-- MVSC_021_SELECTED_DEVICE_HEADER -->
-                        <TextBlock Text="Selected Device"
+                        <TextBlock Grid.Row="0"
+                                   Text="Selected Device"
                                    FontSize="14"
                                    FontWeight="SemiBold"
                                    Foreground="White" />
 
+                        <!-- MVSC_021A_DEVICE_COMBOBOX -->
+                        <ComboBox x:Name="DeviceComboBox"
+                                  Grid.Row="2"
+                                  Style="{StaticResource DarkComboBoxStyle}"
+                                  SelectionChanged="DeviceComboBox_OnSelectionChanged" />
+
                         <!-- MVSC_022_SELECTED_DEVICE_TEXT -->
                         <TextBlock x:Name="SelectedDeviceTextBlock"
-                                   Margin="0,8,0,0"
+                                   Grid.Row="4"
                                    FontSize="13"
                                    Foreground="#D8D8D8"
                                    TextWrapping="Wrap" />
-                    </StackPanel>
+                    </Grid>
                 </Border>
 
                 <!-- MVSC_064_BPM_CARD -->

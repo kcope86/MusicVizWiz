@@ -14,12 +14,16 @@ namespace MusicVisualizer.Visualization
         private const int BarCount = 64;
         private const double DefaultBarSpacing = 4.0;
         private const double DefaultMinBarHeight = 2.0;
+        private const float SilentValueThreshold = 0.0001f;
 
         private readonly Rectangle[] _bars = new Rectangle[BarCount];
         private readonly float[] _smoothedValues = new float[BarCount];
         private readonly float[] _peakValues = new float[BarCount];
+        private readonly float[] _synchronizedFadeStartValues = new float[BarCount];
 
         private bool _isBuilt;
+        private bool _isSynchronizedFadeActive;
+        private float _synchronizedFadeProgress;
 
         // cached brushes to avoid reallocation every frame
         private SolidColorBrush _primaryBrush = new SolidColorBrush(Colors.MediumAquamarine);
@@ -76,13 +80,17 @@ namespace MusicVisualizer.Visualization
         public void UpdateBars(float[] values)
         {
             if (!_isBuilt || values == null || values.Length == 0)
+            {
                 return;
+            }
 
             double canvasWidth = BarsCanvas.ActualWidth;
             double canvasHeight = BarsCanvas.ActualHeight;
 
             if (canvasWidth <= 0 || canvasHeight <= 0)
+            {
                 return;
+            }
 
             double spacing = Math.Max(0.0, BarSpacing);
             double minHeight = Math.Max(0.0, MinBarHeight);
@@ -92,35 +100,75 @@ namespace MusicVisualizer.Visualization
             double barWidth = availableWidth / BarCount;
 
             if (barWidth <= 0)
+            {
                 return;
+            }
 
             float attack = Clamp(Attack, 0f, 1f);
             float decay = Clamp(Decay, 0f, 1f);
             float peakFall = Math.Max(0f, PeakFallSpeed);
 
+            bool hasMeaningfulInput = HasMeaningfulInput(values);
+
+            if (hasMeaningfulInput)
+            {
+                _isSynchronizedFadeActive = false;
+
+                for (int i = 0; i < BarCount; i++)
+                {
+                    float target = i < values.Length ? Clamp(values[i], 0f, 1f) : 0f;
+                    float current = _smoothedValues[i];
+
+                    if (target > current)
+                    {
+                        current += (target - current) * attack;
+                    }
+                    else
+                    {
+                        current -= (current - target) * decay;
+                    }
+
+                    current = Clamp(current, 0f, 1f);
+                    _smoothedValues[i] = current;
+                }
+            }
+            else
+            {
+                BeginSynchronizedFadeIfNeeded();
+
+                float fadeStep = GetSynchronizedFadeStep();
+                _synchronizedFadeProgress = Clamp(_synchronizedFadeProgress + fadeStep, 0f, 1f);
+
+                float remaining = 1f - _synchronizedFadeProgress;
+
+                for (int i = 0; i < BarCount; i++)
+                {
+                    _smoothedValues[i] = Clamp(_synchronizedFadeStartValues[i] * remaining, 0f, 1f);
+                }
+
+                if (_synchronizedFadeProgress >= 1f)
+                {
+                    _isSynchronizedFadeActive = false;
+                }
+            }
+
             for (int i = 0; i < BarCount; i++)
             {
-                float target = i < values.Length ? Clamp(values[i], 0f, 1f) : 0f;
                 float current = _smoothedValues[i];
-
-                if (target > current)
-                    current += (target - current) * attack;
-                else
-                    current -= (current - target) * decay;
-
-                current = Clamp(current, 0f, 1f);
-                _smoothedValues[i] = current;
-
                 float peak = _peakValues[i];
 
                 if (current > peak)
+                {
                     peak = current;
+                }
                 else
+                {
                     peak -= peakFall;
+                }
 
                 _peakValues[i] = Math.Max(0f, peak);
 
-                double height = Math.Max(minHeight, current * canvasHeight);
+                double height = current <= 0f ? 0.0 : Math.Max(minHeight, current * canvasHeight);
                 double x = i * (barWidth + spacing);
                 double y = canvasHeight - height;
 
@@ -141,16 +189,24 @@ namespace MusicVisualizer.Visualization
         private Brush GetBrush(int index)
         {
             if (VisualStyle == VisualizerStyle.Solid)
+            {
                 return _primaryBrush;
+            }
 
             if (VisualStyle == VisualizerStyle.Gradient)
+            {
                 return GetGradientBrush();
+            }
 
             if (VisualStyle == VisualizerStyle.Custom)
+            {
                 return GetCustomBrush(index);
+            }
 
             if (VisualStyle == VisualizerStyle.Rainbow)
+            {
                 return new SolidColorBrush(GetRainbowColor(index));
+            }
 
             return _primaryBrush;
         }
@@ -186,7 +242,9 @@ namespace MusicVisualizer.Visualization
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (!_isBuilt)
+            {
                 return;
+            }
 
             UpdateBars(_smoothedValues);
         }
@@ -194,7 +252,9 @@ namespace MusicVisualizer.Visualization
         private void BuildBars()
         {
             if (_isBuilt)
+            {
                 return;
+            }
 
             BarsCanvas.Children.Clear();
 
@@ -215,6 +275,47 @@ namespace MusicVisualizer.Visualization
         }
 
         // -----------------------------
+        // Fade Helpers
+        // -----------------------------
+
+        private void BeginSynchronizedFadeIfNeeded()
+        {
+            if (_isSynchronizedFadeActive)
+            {
+                return;
+            }
+
+            _isSynchronizedFadeActive = true;
+            _synchronizedFadeProgress = 0f;
+
+            for (int i = 0; i < BarCount; i++)
+            {
+                _synchronizedFadeStartValues[i] = _smoothedValues[i];
+            }
+        }
+
+        private bool HasMeaningfulInput(float[] values)
+        {
+            int count = Math.Min(values.Length, BarCount);
+
+            for (int i = 0; i < count; i++)
+            {
+                if (values[i] > SilentValueThreshold)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private float GetSynchronizedFadeStep()
+        {
+            float decay = Clamp(Decay, 0.01f, 1f);
+            return Math.Max(0.003f, decay * 0.12f);
+        }
+
+        // -----------------------------
         // Helpers
         // -----------------------------
 
@@ -230,7 +331,9 @@ namespace MusicVisualizer.Visualization
             double x = c * (1.0 - Math.Abs(((hue / 60.0) % 2.0) - 1.0));
             double m = value - c;
 
-            double rPrime, gPrime, bPrime;
+            double rPrime;
+            double gPrime;
+            double bPrime;
 
             if (hue < 60) { rPrime = c; gPrime = x; bPrime = 0; }
             else if (hue < 120) { rPrime = x; gPrime = c; bPrime = 0; }
