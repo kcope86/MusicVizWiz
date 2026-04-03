@@ -74,12 +74,19 @@ namespace MusicVisualizer
             StartLoopbackCapture();
         }
 
-        // MVCS_006_WINDOW_LIFECYCLE_ON_CLOSED
+        // MVCS_006_WINDOW_LIFECYCLE_ON_CLOSING
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            _uiTimer.Stop();
+            _loopbackCaptureService.Stop();
+            base.OnClosing(e);
+        }
+
+        // MVCS_007_WINDOW_LIFECYCLE_ON_CLOSED
         protected override void OnClosed(EventArgs e)
         {
             Loaded -= OnWindowLoaded;
 
-            _uiTimer.Stop();
             _uiTimer.Tick -= OnUiTimerTick;
 
             _loopbackCaptureService.LevelCalculated -= OnLevelCalculated;
@@ -89,7 +96,7 @@ namespace MusicVisualizer
             base.OnClosed(e);
         }
 
-        // MVCS_007_WINDOW_LOADED_INITIALIZATION
+        // MVCS_008_WINDOW_LOADED_INITIALIZATION
         private void OnWindowLoaded(object sender, RoutedEventArgs e)
         {
             RefreshAllColorPreviews();
@@ -108,12 +115,12 @@ namespace MusicVisualizer
             }
         }
 
-        // MVCS_008_CAPTURE_AND_FFT_SECTION
+        // MVCS_009_CAPTURE_AND_FFT_SECTION
         // -----------------------------
         // Capture / FFT
         // -----------------------------
 
-        // MVCS_009_CAPTURE_SHOW_SELECTED_DEVICE
+        // MVCS_010_CAPTURE_SHOW_SELECTED_DEVICE
         private void ShowSelectedDevice()
         {
             AudioDeviceInfo? device = _audioDeviceService.GetRenderDeviceById(SpotifyWaveLinkDeviceId);
@@ -131,7 +138,7 @@ namespace MusicVisualizer
                 $"State: {device.State}";
         }
 
-        // MVCS_010_CAPTURE_START_LOOPBACK
+        // MVCS_011_CAPTURE_START_LOOPBACK
         private void StartLoopbackCapture()
         {
             try
@@ -152,25 +159,41 @@ namespace MusicVisualizer
             }
         }
 
-        // MVCS_011_CAPTURE_LEVEL_EVENT_HANDLER
+        // MVCS_012_CAPTURE_LEVEL_EVENT_HANDLER
         private void OnLevelCalculated(object? sender, AudioCaptureLevelEventArgs e)
         {
-            Dispatcher.Invoke(() =>
+            if (Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished)
             {
-                PeakValueTextBlock.Text = $"Peak: {e.PeakLevel:F4}";
+                return;
+            }
+
+            Dispatcher.BeginInvoke(() =>
+            {
+                if (PeakValueTextBlock != null)
+                {
+                    PeakValueTextBlock.Text = $"Peak: {e.PeakLevel:F4}";
+                }
             });
         }
 
-        // MVCS_012_CAPTURE_STATUS_EVENT_HANDLER
+        // MVCS_013_CAPTURE_STATUS_EVENT_HANDLER
         private void OnStatusChanged(object? sender, string status)
         {
-            Dispatcher.Invoke(() =>
+            if (Dispatcher.HasShutdownStarted || Dispatcher.HasShutdownFinished)
             {
-                CaptureStatusTextBlock.Text = status;
+                return;
+            }
+
+            Dispatcher.BeginInvoke(() =>
+            {
+                if (CaptureStatusTextBlock != null)
+                {
+                    CaptureStatusTextBlock.Text = status;
+                }
             });
         }
 
-        // MVCS_013_UI_TIMER_TICK_PIPELINE
+        // MVCS_014_UI_TIMER_TICK_PIPELINE
         private void OnUiTimerTick(object? sender, EventArgs e)
         {
             BufferedSamplesTextBlock.Text =
@@ -241,7 +264,7 @@ namespace MusicVisualizer
             SpectrumVisualizer.UpdateBars(bars);
         }
 
-        // MVCS_014_SPECTRUM_TUNING_APPLICATION
+        // MVCS_015_SPECTRUM_TUNING_APPLICATION
         private void ApplySpectrumTuning(float[] bars)
         {
             float gain = (float)GainSlider.Value;
@@ -267,12 +290,12 @@ namespace MusicVisualizer
             }
         }
 
-        // MVCS_015_UI_EVENT_HANDLERS_SECTION
+        // MVCS_016_UI_EVENT_HANDLERS_SECTION
         // -----------------------------
         // UI EVENTS
         // -----------------------------
 
-        // MVCS_016_EVENT_PRESET_COMBOBOX_SELECTION_CHANGED
+        // MVCS_017_EVENT_PRESET_COMBOBOX_SELECTION_CHANGED
         private void PresetComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_isUpdatingPresetSelection || !IsInitialized)
@@ -291,13 +314,13 @@ namespace MusicVisualizer
             ApplyPreset(presetName);
         }
 
-        // MVCS_016A_EVENT_RESET_TO_DEFAULTS_BUTTON_CLICK
+        // MVCS_017A_EVENT_RESET_TO_DEFAULTS_BUTTON_CLICK
         private void ResetToDefaultsButton_OnClick(object sender, RoutedEventArgs e)
         {
             ResetToDefaults();
         }
 
-        // MVCS_017_EVENT_GAIN_SLIDER_CHANGED
+        // MVCS_018_EVENT_GAIN_SLIDER_CHANGED
         private void GainSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (GainValueTextBlock != null)
@@ -308,7 +331,7 @@ namespace MusicVisualizer
             UpdatePresetSelectionForManualChange();
         }
 
-        // MVCS_018_EVENT_THRESHOLD_SLIDER_CHANGED
+        // MVCS_019_EVENT_THRESHOLD_SLIDER_CHANGED
         private void ThresholdSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (ThresholdValueTextBlock != null)
@@ -319,72 +342,72 @@ namespace MusicVisualizer
             UpdatePresetSelectionForManualChange();
         }
 
-        // MVCS_019_EVENT_STYLE_COMBOBOX_SELECTION_CHANGED
+        // MVCS_020_EVENT_STYLE_COMBOBOX_SELECTION_CHANGED
         private void StyleComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ApplyVisualizerSettingsFromControls();
         }
 
-        // MVCS_020_EVENT_ATTACK_SLIDER_CHANGED
+        // MVCS_021_EVENT_ATTACK_SLIDER_CHANGED
         private void AttackSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             ApplyVisualizerSettingsFromControls();
             UpdatePresetSelectionForManualChange();
         }
 
-        // MVCS_021_EVENT_DECAY_SLIDER_CHANGED
+        // MVCS_022_EVENT_DECAY_SLIDER_CHANGED
         private void DecaySlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             ApplyVisualizerSettingsFromControls();
             UpdatePresetSelectionForManualChange();
         }
 
-        // MVCS_022_EVENT_PEAK_FALL_SPEED_SLIDER_CHANGED
+        // MVCS_023_EVENT_PEAK_FALL_SPEED_SLIDER_CHANGED
         private void PeakFallSpeedSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             ApplyVisualizerSettingsFromControls();
             UpdatePresetSelectionForManualChange();
         }
 
-        // MVCS_023_EVENT_BAR_SPACING_SLIDER_CHANGED
+        // MVCS_024_EVENT_BAR_SPACING_SLIDER_CHANGED
         private void BarSpacingSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             ApplyVisualizerSettingsFromControls();
         }
 
-        // MVCS_024_EVENT_MIN_BAR_HEIGHT_SLIDER_CHANGED
+        // MVCS_025_EVENT_MIN_BAR_HEIGHT_SLIDER_CHANGED
         private void MinBarHeightSlider_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             ApplyVisualizerSettingsFromControls();
         }
 
-        // MVCS_025_EVENT_PRIMARY_COLOR_TEXT_CHANGED
+        // MVCS_026_EVENT_PRIMARY_COLOR_TEXT_CHANGED
         private void PrimaryColorTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             UpdateColorPreviewSafe(PrimaryColorTextBox, PrimaryColorPreview);
             ApplyVisualizerSettingsFromControls();
         }
 
-        // MVCS_026_EVENT_SECONDARY_COLOR_TEXT_CHANGED
+        // MVCS_027_EVENT_SECONDARY_COLOR_TEXT_CHANGED
         private void SecondaryColorTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             UpdateColorPreviewSafe(SecondaryColorTextBox, SecondaryColorPreview);
             ApplyVisualizerSettingsFromControls();
         }
 
-        // MVCS_027_EVENT_ACCENT_COLOR_TEXT_CHANGED
+        // MVCS_028_EVENT_ACCENT_COLOR_TEXT_CHANGED
         private void AccentColorTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             UpdateColorPreviewSafe(AccentColorTextBox, AccentColorPreview);
             ApplyVisualizerSettingsFromControls();
         }
 
-        // MVCS_028_SETTINGS_APPLICATION_SECTION
+        // MVCS_029_SETTINGS_APPLICATION_SECTION
         // -----------------------------
         // SETTINGS APPLICATION
         // -----------------------------
 
-        // MVCS_029_APPLY_VISUALIZER_SETTINGS_FROM_CONTROLS
+        // MVCS_030_APPLY_VISUALIZER_SETTINGS_FROM_CONTROLS
         private void ApplyVisualizerSettingsFromControls()
         {
             if (!IsInitialized)
@@ -429,7 +452,7 @@ namespace MusicVisualizer
             SpectrumVisualizer.AccentColor = ParseColorOrDefault(AccentColorTextBox?.Text, Colors.HotPink);
         }
 
-        // MVCS_030_GET_SELECTED_VISUALIZER_STYLE
+        // MVCS_031_GET_SELECTED_VISUALIZER_STYLE
         private VisualizerStyle GetSelectedVisualizerStyle()
         {
             ComboBoxItem? selectedItem = StyleComboBox.SelectedItem as ComboBoxItem;
@@ -459,12 +482,12 @@ namespace MusicVisualizer
             return VisualizerStyle.Solid;
         }
 
-        // MVCS_031_PRESETS_SECTION
+        // MVCS_032_PRESETS_SECTION
         // -----------------------------
         // PRESETS
         // -----------------------------
 
-        // MVCS_032_APPLY_PRESET
+        // MVCS_033_APPLY_PRESET
         private void ApplyPreset(string presetName)
         {
             _isApplyingPreset = true;
@@ -510,7 +533,7 @@ namespace MusicVisualizer
             UpdatePresetStatusText(presetName);
         }
 
-        // MVCS_032A_RESET_TO_DEFAULTS
+        // MVCS_033A_RESET_TO_DEFAULTS
         private void ResetToDefaults()
         {
             _isApplyingPreset = true;
@@ -545,7 +568,7 @@ namespace MusicVisualizer
             UpdatePresetStatusText(PresetBalanced);
         }
 
-        // MVCS_033_PRESET_UPDATE_FOR_MANUAL_CHANGE
+        // MVCS_034_PRESET_UPDATE_FOR_MANUAL_CHANGE
         private void UpdatePresetSelectionForManualChange()
         {
             if (!IsInitialized || _isApplyingPreset || _isUpdatingPresetSelection)
@@ -556,7 +579,7 @@ namespace MusicVisualizer
             UpdatePresetSelectionFromCurrentValues();
         }
 
-        // MVCS_034_PRESET_UPDATE_FROM_CURRENT_VALUES
+        // MVCS_035_PRESET_UPDATE_FROM_CURRENT_VALUES
         private void UpdatePresetSelectionFromCurrentValues()
         {
             string presetName = GetMatchingPresetNameForCurrentValues();
@@ -564,7 +587,7 @@ namespace MusicVisualizer
             UpdatePresetStatusText(presetName);
         }
 
-        // MVCS_035_PRESET_GET_MATCHING_NAME_FOR_CURRENT_VALUES
+        // MVCS_036_PRESET_GET_MATCHING_NAME_FOR_CURRENT_VALUES
         private string GetMatchingPresetNameForCurrentValues()
         {
             if (MatchesPreset(DefaultAttack, DefaultDecay, DefaultPeakFallSpeed, DefaultGain, DefaultThreshold))
@@ -585,7 +608,7 @@ namespace MusicVisualizer
             return PresetCustom;
         }
 
-        // MVCS_036_PRESET_MATCHES_PRESET
+        // MVCS_037_PRESET_MATCHES_PRESET
         private bool MatchesPreset(
             double attack,
             double decay,
@@ -600,13 +623,13 @@ namespace MusicVisualizer
                    && AreClose(ThresholdSlider.Value, threshold);
         }
 
-        // MVCS_037_PRESET_ARE_CLOSE_HELPER
+        // MVCS_038_PRESET_ARE_CLOSE_HELPER
         private static bool AreClose(double left, double right)
         {
             return Math.Abs(left - right) < 0.0001;
         }
 
-        // MVCS_038_PRESET_SET_SELECTION
+        // MVCS_039_PRESET_SET_SELECTION
         private void SetPresetSelection(string presetName)
         {
             if (PresetComboBox == null)
@@ -637,7 +660,7 @@ namespace MusicVisualizer
             }
         }
 
-        // MVCS_038A_STYLE_SET_SELECTION
+        // MVCS_039A_STYLE_SET_SELECTION
         private void SetStyleSelection(string styleName)
         {
             if (StyleComboBox == null)
@@ -659,14 +682,14 @@ namespace MusicVisualizer
             StyleComboBox.SelectedIndex = 0;
         }
 
-        // MVCS_039_PRESET_GET_SELECTED_NAME
+        // MVCS_040_PRESET_GET_SELECTED_NAME
         private string GetSelectedPresetName()
         {
             ComboBoxItem? selectedItem = PresetComboBox.SelectedItem as ComboBoxItem;
             return selectedItem?.Content?.ToString() ?? PresetBalanced;
         }
 
-        // MVCS_040_PRESET_UPDATE_STATUS_TEXT
+        // MVCS_041_PRESET_UPDATE_STATUS_TEXT
         private void UpdatePresetStatusText(string presetName)
         {
             if (PresetStatusTextBlock == null)
@@ -699,7 +722,7 @@ namespace MusicVisualizer
             }
         }
 
-        // MVCS_041_SPECTRUM_VALUE_TEXT_UPDATES
+        // MVCS_042_SPECTRUM_VALUE_TEXT_UPDATES
         private void UpdateSpectrumValueTextBlocks()
         {
             if (GainValueTextBlock != null)
@@ -713,12 +736,12 @@ namespace MusicVisualizer
             }
         }
 
-        // MVCS_042_COLOR_HELPERS_SECTION
+        // MVCS_043_COLOR_HELPERS_SECTION
         // -----------------------------
         // COLOR HELPERS
         // -----------------------------
 
-        // MVCS_043_COLOR_REFRESH_ALL_PREVIEWS
+        // MVCS_044_COLOR_REFRESH_ALL_PREVIEWS
         private void RefreshAllColorPreviews()
         {
             UpdateColorPreviewSafe(PrimaryColorTextBox, PrimaryColorPreview);
@@ -726,7 +749,7 @@ namespace MusicVisualizer
             UpdateColorPreviewSafe(AccentColorTextBox, AccentColorPreview);
         }
 
-        // MVCS_044_COLOR_UPDATE_PREVIEW_SAFE
+        // MVCS_045_COLOR_UPDATE_PREVIEW_SAFE
         private void UpdateColorPreviewSafe(TextBox? textBox, Border? preview)
         {
             if (textBox == null || preview == null)
@@ -753,13 +776,13 @@ namespace MusicVisualizer
             }
         }
 
-        // MVCS_045_COLOR_PARSE_OR_DEFAULT
+        // MVCS_046_COLOR_PARSE_OR_DEFAULT
         private static Color ParseColorOrDefault(string? hex, Color fallback)
         {
             return TryParseColor(hex, out Color color) ? color : fallback;
         }
 
-        // MVCS_046_COLOR_TRY_PARSE
+        // MVCS_047_COLOR_TRY_PARSE
         private static bool TryParseColor(string? hex, out Color color)
         {
             color = Colors.Transparent;

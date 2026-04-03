@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Myb9YWjGu0A=",
+  "dgSpecHash": "Y8adb3Vx0YM=",
   "success": true,
-  "projectFilePath": "C:\\Development\\Projects\\MusicVisualizer\\MusicVisualizer\\MusicVisualizer.csproj",
+  "projectFilePath": "C:\\Development\\Projects\\MusicVizWiz\\MusicVisualizer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\kcope\\.nuget\\packages\\naudio\\2.3.0\\naudio.2.3.0.nupkg.sha512",
     "C:\\Users\\kcope\\.nuget\\packages\\naudio.asio\\2.3.0\\naudio.asio.2.3.0.nupkg.sha512",
