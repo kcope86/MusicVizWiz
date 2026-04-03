@@ -1,0 +1,64 @@
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\MusicVisualizer.exe
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\MusicVisualizer.deps.json
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\MusicVisualizer.runtimeconfig.json
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\MusicVisualizer.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\MusicVisualizer.pdb
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MainWindow.g.cs
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\App.g.cs
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer_MarkupCompile.cache
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer_MarkupCompile.lref
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MainWindow.baml
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.g.resources
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.AssemblyInfoInputs.cache
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.AssemblyInfo.cs
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.csproj.CoreCompileInputs.cache
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\refint\MusicVisualizer.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.pdb
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.genruntimeconfig.cache
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\ref\MusicVisualizer.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.Asio.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.Core.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.Midi.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.Wasapi.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.WinForms.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.WinMM.dll
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.csproj.AssemblyReference.cache
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVis.23A6A42A.Up2Date
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\Visualization\SpectrumVisualizerControl.baml
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\Visualization\SpectrumVisualizerControl.g.cs
+C:\Development\Projects\BufferBuddy v0.1\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\MusicVisualizer.exe
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\MusicVisualizer.deps.json
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\MusicVisualizer.runtimeconfig.json
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\MusicVisualizer.dll
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\MusicVisualizer.pdb
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.dll
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.Asio.dll
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.Core.dll
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.Midi.dll
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.Wasapi.dll
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.WinForms.dll
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\bin\Debug\net8.0-windows\NAudio.WinMM.dll
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.csproj.AssemblyReference.cache
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\Visualization\SpectrumVisualizerControl.baml
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MainWindow.g.cs
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\Visualization\SpectrumVisualizerControl.g.cs
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\App.g.cs
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer_MarkupCompile.cache
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer_MarkupCompile.lref
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MainWindow.baml
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.g.resources
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.AssemblyInfoInputs.cache
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.AssemblyInfo.cs
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.csproj.CoreCompileInputs.cache
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVis.23A6A42A.Up2Date
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.dll
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\refint\MusicVisualizer.dll
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.pdb
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\MusicVisualizer.genruntimeconfig.cache
+C:\Development\Projects\MusicVisualizer\MusicVisualizer\obj\Debug\net8.0-windows\ref\MusicVisualizer.dll

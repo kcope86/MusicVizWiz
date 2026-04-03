@@ -1,0 +1,859 @@
+﻿<Window x:Class="MusicVisualizer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:visualization="clr-namespace:MusicVisualizer.Visualization"
+        mc:Ignorable="d"
+        Title="Music Visualizer"
+        Height="900"
+        Width="1400"
+        MinHeight="760"
+        MinWidth="1100"
+        Background="#111111">
+
+    <!-- MVSC_001_WINDOW_RESOURCES -->
+    <Window.Resources>
+
+        <!-- MVSC_002_COMBOBOX_RESOURCE_BRUSHES -->
+        <SolidColorBrush x:Key="ComboBackgroundBrush" Color="#222222" />
+        <SolidColorBrush x:Key="ComboForegroundBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="ComboBorderBrush" Color="#3A3A3A" />
+        <SolidColorBrush x:Key="ComboPopupBackgroundBrush" Color="#1C1C1C" />
+        <SolidColorBrush x:Key="ComboItemHoverBrush" Color="#2D2D2D" />
+        <SolidColorBrush x:Key="ComboItemSelectedBrush" Color="#3C3C3C" />
+
+        <!-- MVSC_003_DARK_COMBOBOX_ITEM_STYLE -->
+        <Style x:Key="DarkComboBoxItemStyle" TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="{StaticResource ComboForegroundBrush}" />
+            <Setter Property="Background" Value="{StaticResource ComboPopupBackgroundBrush}" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="ItemBorder"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="ItemBorder"
+                                        Property="Background"
+                                        Value="{StaticResource ComboItemHoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder"
+                                        Property="Background"
+                                        Value="{StaticResource ComboItemSelectedBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#777777" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- MVSC_004_DARK_COMBOBOX_STYLE -->
+        <Style x:Key="DarkComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="{StaticResource ComboForegroundBrush}" />
+            <Setter Property="Background" Value="{StaticResource ComboBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ComboBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="8,4" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource DarkComboBoxItemStyle}" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <!-- MVSC_004A_COMBOBOX_TOGGLE_BUTTON -->
+                            <ToggleButton x:Name="ToggleButton"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  Focusable="False"
+                                  ClickMode="Press"
+                                  IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <Border x:Name="OuterBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="30" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- MVSC_005_DARK_COMBOBOX_SELECTION_CONTENT -->
+                                        <ContentPresenter x:Name="ContentSite"
+                                                  Margin="{TemplateBinding Padding}"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Left"
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                  IsHitTestVisible="False" />
+
+                                        <!-- MVSC_006_DARK_COMBOBOX_DROPDOWN_GLYPH -->
+                                        <Border Grid.Column="1"
+                                        Background="Transparent">
+                                            <Path HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Fill="{TemplateBinding Foreground}"
+                                          Data="M 0 0 L 4 4 L 8 0 Z" />
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </ToggleButton>
+
+                            <!-- MVSC_007_DARK_COMBOBOX_POPUP -->
+                            <Popup x:Name="PART_Popup"
+                           Placement="Bottom"
+                           AllowsTransparency="True"
+                           Focusable="False"
+                           IsOpen="{TemplateBinding IsDropDownOpen}"
+                           PopupAnimation="Slide">
+                                <Border Margin="0,2,0,0"
+                                MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                Background="{StaticResource ComboPopupBackgroundBrush}"
+                                BorderBrush="{StaticResource ComboBorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="2">
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+
+                        <!-- MVSC_008_DARK_COMBOBOX_STYLE_TRIGGERS -->
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="OuterBorder" Property="BorderBrush" Value="#5A5A5A" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="OuterBorder" Property="BorderBrush" Value="#8CC8FF" />
+                            </Trigger>
+                            <Trigger Property="IsDropDownOpen" Value="True">
+                                <Setter TargetName="OuterBorder" Property="BorderBrush" Value="#8CC8FF" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#777777" />
+                                <Setter TargetName="OuterBorder" Property="Opacity" Value="0.65" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- MVSC_009_WINDOW_ROOT_GRID -->
+    <Grid Margin="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="16" />
+            <ColumnDefinition Width="360" />
+        </Grid.ColumnDefinitions>
+
+        <!-- MVSC_010_LEFT_CONTENT_AREA -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="16" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="16" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- MVSC_011_APP_TITLE -->
+            <TextBlock Grid.Row="0"
+                       Text="Music Visualizer — Customization Framework"
+                       FontSize="24"
+                       FontWeight="SemiBold"
+                       Foreground="White" />
+
+            <!-- MVSC_012_APP_DESCRIPTION -->
+            <TextBlock Grid.Row="2"
+                       Text="Live FFT data is mapped into 64 bars. Style, motion, layout, color, and spectrum tuning update the visualizer in real time."
+                       FontSize="13"
+                       Foreground="#BBBBBB"
+                       TextWrapping="Wrap" />
+
+            <!-- MVSC_013_SPECTRUM_VISUALIZER_HOST -->
+            <visualization:SpectrumVisualizerControl x:Name="SpectrumVisualizer"
+                                                     Grid.Row="4" />
+
+            <!-- MVSC_063_BOTTOM_STATUS_ROW -->
+            <Grid Grid.Row="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.1*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="1.6*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="160" />
+                </Grid.ColumnDefinitions>
+
+                <!-- MVSC_014_CAPTURE_STATUS_CARD -->
+                <Border Grid.Column="0"
+                        Background="#1A1A1A"
+                        BorderBrush="#2A2A2A"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Padding="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- MVSC_015_CAPTURE_STATUS_HEADER -->
+                        <TextBlock Grid.Row="0"
+                                   Text="Capture Status"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="White" />
+
+                        <!-- MVSC_016_CAPTURE_STATUS_TEXT -->
+                        <TextBlock x:Name="CaptureStatusTextBlock"
+                                   Grid.Row="2"
+                                   FontSize="13"
+                                   Foreground="#D8D8D8"
+                                   TextWrapping="Wrap"
+                                   Text="Not started." />
+
+                        <!-- MVSC_017_CAPTURE_PEAK_TEXT -->
+                        <TextBlock x:Name="PeakValueTextBlock"
+                                   Grid.Row="4"
+                                   FontSize="13"
+                                   Foreground="#A7E3A1"
+                                   Text="Peak: 0.0000" />
+
+                        <!-- MVSC_018_CAPTURE_BUFFERED_SAMPLES_TEXT -->
+                        <TextBlock x:Name="BufferedSamplesTextBlock"
+                                   Grid.Row="6"
+                                   FontSize="13"
+                                   Foreground="#8CC8FF"
+                                   Text="Buffered Samples: 0" />
+
+                        <!-- MVSC_019_CAPTURE_FFT_ENERGY_TEXT -->
+                        <TextBlock x:Name="FftEnergyTextBlock"
+                                   Grid.Row="8"
+                                   FontSize="13"
+                                   Foreground="#FFD580"
+                                   Text="FFT Energy: 0.0000" />
+                    </Grid>
+                </Border>
+
+                <!-- MVSC_020_SELECTED_DEVICE_CARD -->
+                <Border Grid.Column="2"
+                        Background="#1A1A1A"
+                        BorderBrush="#2A2A2A"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Padding="12">
+                    <StackPanel>
+                        <!-- MVSC_021_SELECTED_DEVICE_HEADER -->
+                        <TextBlock Text="Selected Device"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="White" />
+
+                        <!-- MVSC_022_SELECTED_DEVICE_TEXT -->
+                        <TextBlock x:Name="SelectedDeviceTextBlock"
+                                   Margin="0,8,0,0"
+                                   FontSize="13"
+                                   Foreground="#D8D8D8"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!-- MVSC_064_BPM_CARD -->
+                <Border Grid.Column="4"
+                        Background="#1A1A1A"
+                        BorderBrush="#2A2A2A"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        Padding="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="12" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="8" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- MVSC_065_BPM_HEADER -->
+                        <TextBlock Grid.Row="0"
+                                   Text="BPM"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="White" />
+
+                        <!-- MVSC_066_BPM_VALUE -->
+                        <TextBlock x:Name="BpmValueTextBlock"
+                                   Grid.Row="2"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="34"
+                                   FontWeight="Bold"
+                                   Foreground="#D8D8D8"
+                                   Text="---" />
+
+                        <!-- MVSC_067_BPM_STATUS -->
+                        <TextBlock x:Name="BpmStatusTextBlock"
+                                   Grid.Row="4"
+                                   FontSize="12"
+                                   Foreground="#AFAFAF"
+                                   HorizontalAlignment="Center"
+                                   Text="Waiting for analysis" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- MVSC_023_RIGHT_CONTROL_PANEL_CARD -->
+        <Border Grid.Column="2"
+                Background="#1A1A1A"
+                BorderBrush="#2A2A2A"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="16">
+            <!-- MVSC_024_RIGHT_CONTROL_PANEL_SCROLLVIEWER -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <!-- MVSC_025_RIGHT_CONTROL_PANEL_STACK -->
+                <StackPanel>
+                    <!-- MVSC_026_CONTROL_PANEL_TITLE -->
+                    <TextBlock Text="Visualizer Controls"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Foreground="White" />
+
+                    <!-- MVSC_027_CONTROL_PANEL_DESCRIPTION -->
+                    <TextBlock Margin="0,6,0,0"
+                               Text="Style selection, presets, motion tuning, layout tuning, color system v1, and spectrum tuning."
+                               FontSize="12"
+                               Foreground="#AFAFAF"
+                               TextWrapping="Wrap" />
+
+                    <!-- MVSC_028_PRESETS_SECTION -->
+                    <Border Margin="0,16,0,0"
+                            Background="#151515"
+                            BorderBrush="#2A2A2A"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="12">
+                        <StackPanel>
+                            <!-- MVSC_029_PRESETS_HEADER -->
+                            <TextBlock Text="Presets"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White" />
+
+                            <!-- MVSC_030_PRESETS_DESCRIPTION -->
+                            <TextBlock Margin="0,8,0,0"
+                                       Text="Presets update Attack, Decay, Peak Fall Speed, Gain, and Threshold. Manual tuning switches this to Custom."
+                                       FontSize="12"
+                                       Foreground="#CFCFCF"
+                                       TextWrapping="Wrap" />
+
+                            <!-- MVSC_031_PRESETS_COMBOBOX -->
+                            <ComboBox x:Name="PresetComboBox"
+                                      Margin="0,10,0,0"
+                                      Style="{StaticResource DarkComboBoxStyle}"
+                                      SelectionChanged="PresetComboBox_OnSelectionChanged"
+                                      SelectedIndex="0">
+                                <ComboBoxItem Content="Balanced" />
+                                <ComboBoxItem Content="Punchy" />
+                                <ComboBoxItem Content="Clean" />
+                                <ComboBoxItem Content="Custom" />
+                            </ComboBox>
+
+                            <!-- MVSC_032_PRESETS_STATUS_TEXT -->
+                            <TextBlock x:Name="PresetStatusTextBlock"
+                                       Margin="0,10,0,0"
+                                       FontSize="12"
+                                       Foreground="#AFAFAF"
+                                       TextWrapping="Wrap"
+                                       Text="Balanced uses the current default tuning profile." />
+
+                            <!-- MVSC_032A_RESET_TO_DEFAULTS_BUTTON -->
+                            <Button x:Name="ResetToDefaultsButton"
+                                    Margin="0,12,0,0"
+                                    Padding="12,6"
+                                    HorizontalAlignment="Left"
+                                    Background="#2A2A2A"
+                                    Foreground="White"
+                                    BorderBrush="#3A3A3A"
+                                    BorderThickness="1"
+                                    Click="ResetToDefaultsButton_OnClick"
+                                    Content="Reset to Defaults" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- MVSC_033_STYLE_SECTION -->
+                    <Border Margin="0,16,0,0"
+                            Background="#151515"
+                            BorderBrush="#2A2A2A"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="12">
+                        <StackPanel>
+                            <!-- MVSC_034_STYLE_HEADER -->
+                            <TextBlock Text="Style"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White" />
+
+                            <!-- MVSC_035_STYLE_LABEL -->
+                            <TextBlock Margin="0,8,0,0"
+                                       Text="Visualizer Style"
+                                       FontSize="12"
+                                       Foreground="#CFCFCF" />
+
+                            <!-- MVSC_036_STYLE_COMBOBOX -->
+                            <ComboBox x:Name="StyleComboBox"
+                                      Margin="0,6,0,0"
+                                      Style="{StaticResource DarkComboBoxStyle}"
+                                      SelectionChanged="StyleComboBox_OnSelectionChanged"
+                                      SelectedIndex="0">
+                                <ComboBoxItem Content="Solid" />
+                                <ComboBoxItem Content="Gradient" />
+                                <ComboBoxItem Content="Rainbow" />
+                                <ComboBoxItem Content="Custom" />
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- MVSC_037_MOTION_SECTION -->
+                    <Border Margin="0,16,0,0"
+                            Background="#151515"
+                            BorderBrush="#2A2A2A"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="12">
+                        <StackPanel>
+                            <!-- MVSC_038_MOTION_HEADER -->
+                            <TextBlock Text="Motion"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White" />
+
+                            <!-- MVSC_039_MOTION_GRID -->
+                            <Grid Margin="0,12,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="16" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="16" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- MVSC_040_ATTACK_ROW -->
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="0"
+                                           Text="Attack"
+                                           FontSize="12"
+                                           Foreground="#CFCFCF" />
+                                <TextBlock x:Name="AttackValueTextBlock"
+                                           Grid.Row="0"
+                                           Grid.Column="1"
+                                           Margin="12,0,0,0"
+                                           FontSize="12"
+                                           Foreground="#8CC8FF"
+                                           Text="0.60" />
+                                <Slider x:Name="AttackSlider"
+                                        Grid.Row="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,6,0,0"
+                                        Minimum="0.05"
+                                        Maximum="1.00"
+                                        Value="0.60"
+                                        TickFrequency="0.05"
+                                        IsSnapToTickEnabled="False"
+                                        ValueChanged="AttackSlider_OnValueChanged" />
+
+                                <!-- MVSC_041_DECAY_ROW -->
+                                <TextBlock Grid.Row="3"
+                                           Grid.Column="0"
+                                           Text="Decay"
+                                           FontSize="12"
+                                           Foreground="#CFCFCF" />
+                                <TextBlock x:Name="DecayValueTextBlock"
+                                           Grid.Row="3"
+                                           Grid.Column="1"
+                                           Margin="12,0,0,0"
+                                           FontSize="12"
+                                           Foreground="#8CC8FF"
+                                           Text="0.08" />
+                                <Slider x:Name="DecaySlider"
+                                        Grid.Row="4"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,6,0,0"
+                                        Minimum="0.01"
+                                        Maximum="0.50"
+                                        Value="0.08"
+                                        TickFrequency="0.01"
+                                        IsSnapToTickEnabled="False"
+                                        ValueChanged="DecaySlider_OnValueChanged" />
+
+                                <!-- MVSC_042_PEAK_FALL_SPEED_ROW -->
+                                <TextBlock Grid.Row="6"
+                                           Grid.Column="0"
+                                           Text="Peak Fall Speed"
+                                           FontSize="12"
+                                           Foreground="#CFCFCF" />
+                                <TextBlock x:Name="PeakFallSpeedValueTextBlock"
+                                           Grid.Row="6"
+                                           Grid.Column="1"
+                                           Margin="12,0,0,0"
+                                           FontSize="12"
+                                           Foreground="#8CC8FF"
+                                           Text="0.010" />
+                                <Slider x:Name="PeakFallSpeedSlider"
+                                        Grid.Row="7"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,6,0,0"
+                                        Minimum="0.001"
+                                        Maximum="0.050"
+                                        Value="0.010"
+                                        TickFrequency="0.001"
+                                        IsSnapToTickEnabled="False"
+                                        ValueChanged="PeakFallSpeedSlider_OnValueChanged" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- MVSC_043_LAYOUT_SECTION -->
+                    <Border Margin="0,16,0,0"
+                            Background="#151515"
+                            BorderBrush="#2A2A2A"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="12">
+                        <StackPanel>
+                            <!-- MVSC_044_LAYOUT_HEADER -->
+                            <TextBlock Text="Layout"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White" />
+
+                            <!-- MVSC_045_LAYOUT_GRID -->
+                            <Grid Margin="0,12,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="16" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- MVSC_046_BAR_SPACING_ROW -->
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="0"
+                                           Text="Bar Spacing"
+                                           FontSize="12"
+                                           Foreground="#CFCFCF" />
+                                <TextBlock x:Name="BarSpacingValueTextBlock"
+                                           Grid.Row="0"
+                                           Grid.Column="1"
+                                           Margin="12,0,0,0"
+                                           FontSize="12"
+                                           Foreground="#8CC8FF"
+                                           Text="4.0" />
+                                <Slider x:Name="BarSpacingSlider"
+                                        Grid.Row="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,6,0,0"
+                                        Minimum="0.0"
+                                        Maximum="16.0"
+                                        Value="4.0"
+                                        TickFrequency="0.5"
+                                        IsSnapToTickEnabled="False"
+                                        ValueChanged="BarSpacingSlider_OnValueChanged" />
+
+                                <!-- MVSC_047_MIN_BAR_HEIGHT_ROW -->
+                                <TextBlock Grid.Row="3"
+                                           Grid.Column="0"
+                                           Text="Minimum Bar Height"
+                                           FontSize="12"
+                                           Foreground="#CFCFCF" />
+                                <TextBlock x:Name="MinBarHeightValueTextBlock"
+                                           Grid.Row="3"
+                                           Grid.Column="1"
+                                           Margin="12,0,0,0"
+                                           FontSize="12"
+                                           Foreground="#8CC8FF"
+                                           Text="2.0" />
+                                <Slider x:Name="MinBarHeightSlider"
+                                        Grid.Row="4"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,6,0,0"
+                                        Minimum="0.0"
+                                        Maximum="20.0"
+                                        Value="2.0"
+                                        TickFrequency="0.5"
+                                        IsSnapToTickEnabled="False"
+                                        ValueChanged="MinBarHeightSlider_OnValueChanged" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- MVSC_048_COLORS_SECTION -->
+                    <Border Margin="0,16,0,0"
+                            Background="#151515"
+                            BorderBrush="#2A2A2A"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="12">
+                        <StackPanel>
+                            <!-- MVSC_049_COLORS_HEADER -->
+                            <TextBlock Text="Colors"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White" />
+
+                            <!-- MVSC_050_COLORS_FORMAT_HELP -->
+                            <TextBlock Margin="0,8,0,0"
+                                       Text="Hex format: #RRGGBB or #AARRGGBB"
+                                       FontSize="12"
+                                       Foreground="#AFAFAF" />
+
+                            <!-- MVSC_051_COLORS_GRID -->
+                            <Grid Margin="0,12,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="8" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="12" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="8" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="12" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="8" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="12" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="56" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- MVSC_052_PRIMARY_COLOR_ROW -->
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="0"
+                                           Text="Primary Color"
+                                           FontSize="12"
+                                           Foreground="#CFCFCF" />
+                                <Border x:Name="PrimaryColorPreview"
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        Width="44"
+                                        Height="20"
+                                        HorizontalAlignment="Right"
+                                        CornerRadius="3"
+                                        BorderBrush="#444444"
+                                        BorderThickness="1"
+                                        Background="#6EE7B7" />
+                                <TextBox x:Name="PrimaryColorTextBox"
+                                         Grid.Row="2"
+                                         Grid.ColumnSpan="2"
+                                         Background="#222222"
+                                         Foreground="White"
+                                         BorderBrush="#3A3A3A"
+                                         Text="#6EE7B7"
+                                         TextChanged="PrimaryColorTextBox_OnTextChanged" />
+
+                                <!-- MVSC_053_SECONDARY_COLOR_ROW -->
+                                <TextBlock Grid.Row="4"
+                                           Grid.Column="0"
+                                           Text="Secondary Color"
+                                           FontSize="12"
+                                           Foreground="#CFCFCF" />
+                                <Border x:Name="SecondaryColorPreview"
+                                        Grid.Row="4"
+                                        Grid.Column="1"
+                                        Width="44"
+                                        Height="20"
+                                        HorizontalAlignment="Right"
+                                        CornerRadius="3"
+                                        BorderBrush="#444444"
+                                        BorderThickness="1"
+                                        Background="#60A5FA" />
+                                <TextBox x:Name="SecondaryColorTextBox"
+                                         Grid.Row="6"
+                                         Grid.ColumnSpan="2"
+                                         Background="#222222"
+                                         Foreground="White"
+                                         BorderBrush="#3A3A3A"
+                                         Text="#60A5FA"
+                                         TextChanged="SecondaryColorTextBox_OnTextChanged" />
+
+                                <!-- MVSC_054_ACCENT_COLOR_ROW -->
+                                <TextBlock Grid.Row="8"
+                                           Grid.Column="0"
+                                           Text="Accent Color"
+                                           FontSize="12"
+                                           Foreground="#CFCFCF" />
+                                <Border x:Name="AccentColorPreview"
+                                        Grid.Row="8"
+                                        Grid.Column="1"
+                                        Width="44"
+                                        Height="20"
+                                        HorizontalAlignment="Right"
+                                        CornerRadius="3"
+                                        BorderBrush="#444444"
+                                        BorderThickness="1"
+                                        Background="#F472B6" />
+                                <TextBox x:Name="AccentColorTextBox"
+                                         Grid.Row="10"
+                                         Grid.ColumnSpan="2"
+                                         Background="#222222"
+                                         Foreground="White"
+                                         BorderBrush="#3A3A3A"
+                                         Text="#F472B6"
+                                         TextChanged="AccentColorTextBox_OnTextChanged" />
+
+                                <!-- MVSC_055_COLOR_STATUS_TEXT -->
+                                <TextBlock x:Name="ColorStatusTextBlock"
+                                           Grid.Row="12"
+                                           Grid.ColumnSpan="2"
+                                           FontSize="12"
+                                           Foreground="#AFAFAF"
+                                           TextWrapping="Wrap"
+                                           Text="Solid uses Primary. Gradient uses Primary → Secondary. Custom cycles Primary / Secondary / Accent." />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- MVSC_056_SPECTRUM_SECTION -->
+                    <Border Margin="0,16,0,0"
+                            Background="#151515"
+                            BorderBrush="#2A2A2A"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="12">
+                        <StackPanel>
+                            <!-- MVSC_057_SPECTRUM_HEADER -->
+                            <TextBlock Text="Spectrum"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White" />
+
+                            <!-- MVSC_058_SPECTRUM_DESCRIPTION -->
+                            <TextBlock Margin="0,6,0,0"
+                                       Text="Controls signal intensity and low-level noise filtering."
+                                       FontSize="12"
+                                       Foreground="#AFAFAF"
+                                       TextWrapping="Wrap" />
+
+                            <!-- MVSC_059_SPECTRUM_GRID -->
+                            <Grid Margin="0,12,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="16" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="12" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- MVSC_060_GAIN_ROW -->
+                                <TextBlock Grid.Row="0"
+                                           Grid.Column="0"
+                                           Text="Gain"
+                                           FontSize="12"
+                                           Foreground="#CFCFCF" />
+                                <TextBlock x:Name="GainValueTextBlock"
+                                           Grid.Row="0"
+                                           Grid.Column="1"
+                                           Margin="12,0,0,0"
+                                           FontSize="12"
+                                           Foreground="#8CC8FF"
+                                           Text="1.00" />
+                                <Slider x:Name="GainSlider"
+                                        Grid.Row="1"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,6,0,0"
+                                        Minimum="0.50"
+                                        Maximum="5.00"
+                                        Value="1.00"
+                                        TickFrequency="0.10"
+                                        IsSnapToTickEnabled="False"
+                                        ValueChanged="GainSlider_OnValueChanged" />
+
+                                <!-- MVSC_061_THRESHOLD_ROW -->
+                                <TextBlock Grid.Row="3"
+                                           Grid.Column="0"
+                                           Text="Threshold"
+                                           FontSize="12"
+                                           Foreground="#CFCFCF" />
+                                <TextBlock x:Name="ThresholdValueTextBlock"
+                                           Grid.Row="3"
+                                           Grid.Column="1"
+                                           Margin="12,0,0,0"
+                                           FontSize="12"
+                                           Foreground="#8CC8FF"
+                                           Text="0.020" />
+                                <Slider x:Name="ThresholdSlider"
+                                        Grid.Row="4"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0,6,0,0"
+                                        Minimum="0.000"
+                                        Maximum="0.200"
+                                        Value="0.020"
+                                        TickFrequency="0.005"
+                                        IsSnapToTickEnabled="False"
+                                        ValueChanged="ThresholdSlider_OnValueChanged" />
+
+                                <!-- MVSC_062_SPECTRUM_HELP_TEXT -->
+                                <TextBlock Grid.Row="6"
+                                           Grid.ColumnSpan="2"
+                                           FontSize="12"
+                                           Foreground="#AFAFAF"
+                                           TextWrapping="Wrap"
+                                           Text="Gain boosts the mapped spectrum. Threshold suppresses very low values to reduce flicker." />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Window>
