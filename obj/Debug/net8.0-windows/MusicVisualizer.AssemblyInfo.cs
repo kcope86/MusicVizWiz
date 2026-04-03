@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MusicVisualizer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+61dec3d346a5debb455e6bb706a5e76477ec64f1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3be882510264a56c1574d2843c361812b618960d")]
 [assembly: System.Reflection.AssemblyProductAttribute("MusicVisualizer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MusicVisualizer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
